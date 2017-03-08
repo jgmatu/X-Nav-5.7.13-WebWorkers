@@ -1,22 +1,27 @@
+const PUBNUMPRIMES = 100;
+
 var calcPrimes = function (n) {
-      var prime = 1;
-      primelist = "";
+      var prime = 1, nPrimes = 0;
+      var primelist = "";
       search: while (prime < n) {
             prime = prime + 1;
-            for (var i = 2; i <= Math.sqrt(n); i++) {
+            for (var i = 2; i <= Math.sqrt(prime); i++) {
                   if (prime % i == 0) {
                         continue search;
                   }
             }
             // found a prime!
             primelist += " " + prime;
+            nPrimes = nPrimes + 1;
+
+            if (nPrimes % PUBNUMPRIMES == 0) {
+                  self.postMessage(primelist);
+                  primelist = "";
+            }
       }
-      return primelist;
+      self.postMessage(primelist);
 }
 
 self.onmessage = function (event) {
-      console.log("Reciving... " + event.data);
-      var primes = calcPrimes(parseInt(event.data));
-      console.log(primes);
-      self.postMessage(primes);
+      calcPrimes(parseInt(event.data));
 }
